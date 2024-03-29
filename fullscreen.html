@@ -3,16 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fullscreen GIF</title>
+
 <style>
-  /* CSS to make the background black and the GIF fullscreen */
-  body {
+  body, html {
     margin: 0;
     padding: 0;
+    height: 100%;
     background-color: black;
-    overflow: hidden;
   }
-  img {
+  #splash-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: black;
+    color: white;
+    font-size: 2em;
+    position: absolute;
+    width: 100%;
+    z-index: 2; /* Ensure it's above the GIF */
+  }
+  #gif-container img {
     position: fixed;
     top: 0;
     left: 0;
@@ -24,7 +35,18 @@
 </style>
 </head>
 <body>
-  <!-- GIF -->
-  <img src="file:///home/pro1polaris/Pictures/radar-searching.gif">
+  <div id="splash-screen">Conscious Visionaries</div>
+  <div id="gif-container">
+    <!-- The GIF will be displayed after the splash screen -->
+    <img src="file:///home/pro1polaris/Pictures/radar-searching.gif" style="display:none;">
+  </div>
+
+  <script>
+    // JavaScript to hide the splash screen after 30 seconds and show the GIF
+    setTimeout(function() {
+      document.getElementById('splash-screen').style.display = 'none';
+      document.querySelector('#gif-container img').style.display = 'block';
+    }, 30000); // 30,000 milliseconds = 30 seconds
+  </script>
 </body>
 </html>
