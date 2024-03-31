@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="refresh" content="60"> <!-- Refresh the page every 60 seconds -->
+<meta http-equiv="refresh" content="60">
 <title>Digital Radar Scope</title>
 <style>
   body, html {
@@ -16,16 +16,16 @@
     font-family: monospace;
   }
   #feed {
-    width: 33.33%; /* Left column occupies one-third of the screen width */
+    width: 33.33%;
     height: 100vh;
     overflow: auto;
-    font-size: 24px; /* Adjusted font size */
-    border-right: 5px solid #0f0; /* Added border */
+    font-size: 16px;
     padding: 10px;
     box-sizing: border-box;
+    animation: scrollFeed 60s linear infinite;
   }
   #radarContainer {
-    width: 66.67%; /* Remaining screen width for the radar */
+    flex: 1;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -33,9 +33,9 @@
   }
   #radar {
     position: relative;
-    height: 90vh; /* Radar diameter is 90% of screen height */
-    width: 90vh; /* Maintain aspect ratio to keep the radar circle */
-    max-width: 100%; /* Ensure it doesn't overflow the container */
+    height: 90vh;
+    width: 90vh;
+    max-width: 100%;
     border: 5px solid #0f0;
     border-radius: 50%;
   }
@@ -43,72 +43,89 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background: conic-gradient(rgba(0, 255, 0, 0.5) 25%, transparent 25%);
+    background: conic-gradient(rgba(0, 255, 0, 0) 0%, rgba(0, 255, 0, 0.5) 50%, rgba(0, 255, 0, 0) 100%);
     border-radius: 50%;
     animation: sweep 4s linear infinite;
   }
-  .point {
+  .city {
     position: absolute;
     width: 10px;
     height: 10px;
     background-color: #ff0;
     border-radius: 50%;
     transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+  .label {
+    position: absolute;
+    color: #ff0;
+    white-space: nowrap;
+    transform: translate(-50%, -20px);
+    font-size: 10px;
+    text-shadow: 1px 1px 1px #000;
+    opacity: 1;
   }
   @keyframes sweep {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
+  @keyframes scrollFeed {
+    from { top: 0; }
+    to { top: -100%; }
+  }
 </style>
 </head>
 <body>
-<div id="feed">GPS Coordinates:</div>
+<div id="feed">Major Cities:</div>
 <div id="radarContainer">
   <div id="radar">
     <div id="sweep"></div>
-    <!-- Points will be dynamically added here -->
   </div>
 </div>
+<audio id="radarBeep" src="radar-beep.mp3" loop></audio>
 <script>
-function generateRandomCoordinates() {
-  let coordinates = [];
-  for (let i = 0; i < 10; i++) { // Generate 10 random coordinates
-    let latitude = (Math.random() * 180 - 90).toFixed(5);
-    let longitude = (Math.random() * 360 - 180).toFixed(5);
-    coordinates.push({latitude, longitude});
-  }
-  return coordinates;
-}
+// Simplified list, repeat for demonstration
+const cities = [
+  { name: "New York", latitude: 40.7128, longitude: -74.0060 },
+  { name: "London", latitude: 51.5074, longitude: -0.1278 },
+  // Add additional cities here...
+];
 
-function plotCoordinates(coordinates) {
+function plotCities() {
   const radar = document.getElementById('radar');
-  radar.innerHTML = '<div id="sweep"></div>'; // Clear existing points but keep the sweep
-  coordinates.forEach(coord => {
+  cities.forEach(city => {
     const point = document.createElement('div');
-    point.className = 'point';
-    // Simplified model for demonstration: mapping latitude and longitude to the radar's dimensions
-    const distanceFromCenter = (90 - Math.abs(coord.latitude)) / 90;
+    point.className = 'city';
+    const label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = city.name;
     const radarRadius = radar.offsetWidth / 2;
-    const angle = (coord.longitude + 180) * Math.PI / 180; // Convert longitude to radians
-    const x = radarRadius + radarRadius * distanceFromCenter * Math.cos(angle) - 5; // Adjust for point size
-    const y = radarRadius + radarRadius * distanceFromCenter * Math.sin(angle) - 5; // Adjust for point size
-    point.style.left = `${x}px`;
-    point.style.top = `${y}px`;
+    const angle = (city.longitude + 180) * Math.PI / 180;
+    const x = 50 + 50 * Math.cos(angle); // Adjust for CSS percentages
+    const y = 50 + 50 * Math.sin(angle);
+    point.style.left = `${x}%`;
+    point.style.top = `${y}%`;
+    label.style.left = `${x}%`;
+    label.style.top = `${y + 2}%`; // Adjust label position
     radar.appendChild(point);
+    radar.appendChild(label);
+    setTimeout(() => { point.style.opacity = 0.5; label.style.opacity = 0.5; }, 2000);
   });
 }
 
-function updateFeedAndRadar() {
-  let coordinates = generateRandomCoordinates();
-  let feedElement = document.getElementById('feed');
-  feedElement.innerHTML = 'GPS Coordinates:<br>'; // Reset feed content
-  coordinates.forEach(coord => {
-    feedElement.innerHTML += `Lat: ${coord.latitude}, Lon: ${coord.longitude}<br>`;
+function fillFeed() {
+  const feed = document.getElementById('feed');
+  cities.forEach(city => {
+    feed.innerHTML += `${city.name}<br>`;
   });
-  plotCoordinates(coordinates);
 }
 
-setInterval(updateFeedAndRadar, 4000); // Update coordinates and radar every 4 seconds
+document.addEventListener('DOMContentLoaded', () => {
+  plotCities();
+  fillFeed();
+  document.getElementById('radarBeep').play();
+});
+
 </script>
 </body>
 </html>
