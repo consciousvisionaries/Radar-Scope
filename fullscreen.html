@@ -6,25 +6,14 @@
 <meta http-equiv="refresh" content="60"> <!-- Refresh the page every 60 seconds -->
 
 <style>
-  body, html {
+  /* CSS to make the background black and the GIF fullscreen */
+  body {
     margin: 0;
     padding: 0;
-    height: 100%;
     background-color: black;
+    overflow: hidden;
   }
-  #splash-screen {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    background-color: black;
-    color: white;
-    font-size: 2em;
-    position: absolute;
-    width: 100%;
-    z-index: 2; /* Ensure it's above the GIF */
-  }
-  #gif-container img {
+  img {
     position: fixed;
     top: 0;
     left: 0;
@@ -36,18 +25,7 @@
 </style>
 </head>
 <body>
-  <div id="splash-screen">Conscious Visionaries V8.2</div>
-  <div id="gif-container">
-    <!-- Update the SRC attribute to the correct path. Assuming you're serving this from a local server or correct online path -->
-    <img src="radar-searching.gif" style="display:none;"> <!-- Initially hide the gif -->
-  </div>
-
-  <script>
-    // JavaScript to hide the splash screen after 30 seconds and show the GIF
-    setTimeout(function() {
-      document.getElementById('splash-screen').style.display = 'none';
-      document.querySelector('#gif-container img').style.display = 'block';
-    }, 30000); // 30,000 milliseconds = 30 seconds
-  </script>
+  <!-- GIF -->
+  <img src="file:///home/pro1polaris/Pictures/radar-searching.gif">
 </body>
 </html>
