@@ -4,73 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="refresh" content="60"> <!-- Refresh the page every 60 seconds -->
-
-<title>Digital Radar Scope with Highlighted Coordinates</title>
+<title>Digital Radar Scope</title>
 <style>
-  body, html {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    background-color: black;
-  }
-  #feed {
-    width: 20%;
-    height: 100%;
-    overflow: hidden;
-    color: #0f0;
-    font-family: monospace;
-    font-size: 14px;
-    padding: 10px;
-    box-sizing: border-box;
-    background-color: #000;
-    animation: scrollFeed 10s linear infinite;
-  }
-  #radarContainer {
-    width: 80%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  #radar {
-    position: relative;
-    width: 90%;
-    height: 90vh;
-    max-width: 90vh;
-    border: 2px solid #0f0;
-    border-radius: 50%;
-    overflow: hidden;
-  }
-  #sweep {
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(from 0deg, rgba(0, 255, 0, 0.1) 0%, rgba(0, 255, 0, 0.5) 25%, rgba(0, 255, 0, 0) 50%);
-    border-radius: 50%;
-    transform-origin: center;
-    animation: sweep 4s linear infinite;
-  }
+  /* Previous CSS, ensure it's included for styling */
   .point {
     position: absolute;
-    width: 5px;
-    height: 5px;
-    background-color: #0f0;
+    width: 10px;
+    height: 10px;
+    background-color: #ff0;
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    visibility: hidden; /* Points are hidden by default */
-  }
-  @keyframes sweep {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  @keyframes scrollFeed {
-    from { transform: translateY(100%); }
-    to { transform: translateY(-100%); }
   }
 </style>
 </head>
 <body>
-<div id="feed"></div>
+<div id="feed">GPS Coordinates:</div>
 <div id="radarContainer">
   <div id="radar">
     <div id="sweep"></div>
@@ -79,52 +27,44 @@
 </div>
 <script>
 function generateRandomCoordinates() {
-  const points = [];
-  for (let i = 0; i < 5; i++) {
-    const latitude = Math.random() * 180 - 90;
-    const longitude = Math.random() * 360 - 180;
-    points.push({ latitude, longitude });
+  let coordinates = [];
+  for (let i = 0; i < 10; i++) { // Generate 10 random coordinates
+    let latitude = (Math.random() * 180 - 90).toFixed(5);
+    let longitude = (Math.random() * 360 - 180).toFixed(5);
+    coordinates.push({latitude, longitude});
   }
-  return points;
+  return coordinates;
 }
 
-function mapCoordinatesToPoints(points) {
+function plotCoordinates(coordinates) {
   const radar = document.getElementById('radar');
-  radar.innerHTML = '<div id="sweep"></div>'; // Reset points and keep the sweep
-  points.forEach(point => {
-    const posX = (point.longitude + 180) / 360 * radar.offsetWidth;
-    const posY = radar.offsetHeight - ((point.latitude + 90) / 180 * radar.offsetHeight);
-    const div = document.createElement('div');
-    div.classList.add('point');
-    div.style.left = `${posX}px`;
-    div.style.top = `${posY}px`;
-    radar.appendChild(div);
+  radar.innerHTML = '<div id="sweep"></div>'; // Clear existing points but keep the sweep
+  coordinates.forEach(coord => {
+    const point = document.createElement('div');
+    point.className = 'point';
+    // Simplified model for demonstration: mapping latitude (0 at center to 90 at edge) and ignoring longitude
+    const distanceFromCenter = (90 - Math.abs(coord.latitude)) / 90;
+    const radarRadius = radar.offsetWidth / 2;
+    const angle = (coord.longitude + 180) * Math.PI / 180; // Convert longitude to radians
+    const x = radarRadius + radarRadius * distanceFromCenter * Math.cos(angle) - 5; // Adjust for point size
+    const y = radarRadius + radarRadius * distanceFromCenter * Math.sin(angle) - 5; // Adjust for point size
+    point.style.left = `${x}px`;
+    point.style.top = `${y}px`;
+    radar.appendChild(point);
   });
 }
 
-function updatePointsVisibility(angle) {
-  const points = document.querySelectorAll('.point');
-  points.forEach(point => {
-    const rect = point.getBoundingClientRect();
-    const radarRect = document.getElementById('radar').getBoundingClientRect();
-    const center = { x: radarRect.left + radarRect.width / 2, y: radarRect.top + radarRect.height / 2 };
-    const pointAngle = Math.atan2(rect.top + rect.height / 2 - center.y, rect.left + rect.width / 2 - center.x) * 180 / Math.PI + 180;
-    point.style.visibility = (Math.abs(angle - pointAngle) < 10 || Math.abs(angle - pointAngle) > 350) ? 'visible' : 'hidden';
+function updateFeedAndRadar() {
+  let coordinates = generateRandomCoordinates();
+  let feedElement = document.getElementById('feed');
+  feedElement.innerHTML = 'GPS Coordinates:<br>'; // Reset feed content
+  coordinates.forEach(coord => {
+    feedElement.innerHTML += `Lat: ${coord.latitude}, Lon: ${coord.longitude}<br>`;
   });
+  plotCoordinates(coordinates);
 }
 
-function initRadar() {
-  const sweepElement = document.getElementById('sweep');
-  let angle = 0;
-  setInterval(() => {
-    const points = generateRandomCoordinates();
-    mapCoordinatesToPoints(points);
-    angle = (angle + 10) % 360;
-    updatePointsVisibility(angle);
-  }, 4000); // Sync with sweep animation for simplicity
-}
-
-initRadar();
+setInterval(updateFeedAndRadar, 4000); // Update coordinates and radar every 4 seconds
 </script>
 </body>
 </html>
