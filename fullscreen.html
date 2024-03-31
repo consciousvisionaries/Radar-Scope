@@ -16,16 +16,16 @@
     font-family: monospace;
   }
   #feed {
-    width: 20%;
+    width: 33.33%; /* Left column occupies one-third of the screen width */
     height: 100vh;
     overflow: auto;
-    font-size: 24px; /* Increased font size */
+    font-size: 24px; /* Adjusted font size */
     border-right: 5px solid #0f0; /* Added border */
     padding: 10px;
     box-sizing: border-box;
   }
   #radarContainer {
-    width: 80%;
+    width: 66.67%; /* Remaining screen width for the radar */
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -33,8 +33,9 @@
   }
   #radar {
     position: relative;
-    width: 50vmin;
-    height: 50vmin;
+    height: 90vh; /* Radar diameter is 90% of screen height */
+    width: 90vh; /* Maintain aspect ratio to keep the radar circle */
+    max-width: 100%; /* Ensure it doesn't overflow the container */
     border: 5px solid #0f0;
     border-radius: 50%;
   }
