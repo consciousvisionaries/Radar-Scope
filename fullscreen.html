@@ -3,70 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Digital Radar Scope</title>
+<title>Digital Radar Scope with GPS Feed</title>
 <style>
   body, html {
     height: 100%;
     margin: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
     background-color: black;
   }
-
+  #feed {
+    width: 20%;
+    height: 100%;
+    overflow: hidden;
+    color: #0f0;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #000;
+    animation: scrollFeed 10s linear infinite;
+  }
+  #radarContainer {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   #radar {
-    position: relative;
-    width: 300px;
-    height: 300px;
+    width: 90%;
+    height: 90vh; /* Adjust based on your preference */
+    max-width: 90vh; /* Keeping the radar circle */
     border: 2px solid #0f0;
     border-radius: 50%;
+    position: relative;
     overflow: hidden;
   }
-
   #sweep {
     position: absolute;
-    width: 150%;
-    height: 150%;
-    background-color: rgba(0, 255, 0, 0.2);
-    transform-origin: bottom right;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, rgba(0, 255, 0, 0.1) 0%, rgba(0, 255, 0, 0.5) 25%, rgba(0, 255, 0, 0) 50%);
+    border-radius: 50%;
+    transform-origin: center;
     animation: sweep 4s linear infinite;
   }
-
   @keyframes sweep {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-
-  /* Style for degree markings */
-  .degree {
-    position: absolute;
-    transform-origin: bottom;
-    width: 2px;
-    height: 10px;
-    background-color: #0f0;
-    left: 50%;
-    bottom: 50%;
+  @keyframes scrollFeed {
+    from { transform: translateY(100%); }
+    to { transform: translateY(-100%); }
   }
 </style>
 </head>
 <body>
-<div id="radar">
-  <div id="sweep"></div>
-  <!-- Degree markings will be added here by JS -->
+<div id="feed"></div>
+<div id="radarContainer">
+  <div id="radar">
+    <div id="sweep"></div>
+  </div>
 </div>
 <script>
-// JavaScript for creating degree markings
-function createDegreeMarkings() {
-  const radar = document.getElementById('radar');
-  for (let i = 0; i < 360; i += 10) { // Adjust step for desired granularity
-    const mark = document.createElement('div');
-    mark.classList.add('degree');
-    mark.style.transform = `rotate(${i}deg) translate(0, -50%)`;
-    radar.appendChild(mark);
-  }
+function generateRandomCoordinates() {
+  const latitude = (Math.random() * 180 - 90).toFixed(5);
+  const longitude = (Math.random() * 360 - 180).toFixed(5);
+  return `${latitude}, ${longitude}`;
 }
 
-createDegreeMarkings();
+function populateFeed() {
+  const feed = document.getElementById('feed');
+  let content = '';
+  for (let i = 0; i < 100; i++) {
+    content += `<div>${generateRandomCoordinates()}</div>`;
+  }
+  feed.innerHTML = content;
+}
+
+populateFeed();
+
+setInterval(populateFeed, 10000); // Refresh feed every 10 seconds
 </script>
 </body>
 </html>
