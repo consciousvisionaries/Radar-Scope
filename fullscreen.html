@@ -143,14 +143,11 @@
       <div id="sweep"></div>
       <!-- Headings -->
      <div class="heading-container">
-        <div class="heading">0°</div>
-        <div class="heading">45°</div>
+        <div class="heading">360°</div>
         <div class="heading">90°</div>
-        <div class="heading">135°</div>
         <div class="heading">180°</div>
-        <div class="heading">225°</div>
         <div class="heading">270°</div>
-        <div class="heading">315°</div>
+        <div class="heading">North Pole</div> 
       </div>
       <!-- Add inner circles -->
       <div class="circle" style="width: 85%; height: 85%;"></div>
@@ -172,15 +169,16 @@
   
 <script>
 const cities = [
-  { name: "New York", latitude: 40.7128, longitude: -74.0060 }, // Quadrant 1 (0° - 45°)
-  { name: "London", latitude: 51.5074, longitude: -0.1278 }, // Quadrant 2 (45° - 90°)
-  { name: "Tokyo", latitude: 35.6895, longitude: 139.6917 }, // Quadrant 3 (90° - 135°)
-  { name: "Sydney", latitude: -33.8688, longitude: 151.2093 }, // Quadrant 4 (135° - 180°)
-  { name: "Moscow", latitude: 55.7558, longitude: 37.6173 }, // Quadrant 5 (180° - 225°)
-  { name: "Mexico City", latitude: 19.4326, longitude: -99.1332 }, // Quadrant 6 (225° - 270°)
-  { name: "Cape Town", latitude: -33.9249, longitude: 18.4241 }, // Quadrant 7 (270° - 315°)
-  { name: "Rio de Janeiro", latitude: -22.9068, longitude: -43.1729 } // Quadrant 8 (315° - 360°)
+  { name: "New York", latitude: 40.7128, longitude: -74.0060 }, // 0°
+  { name: "London", latitude: 51.5074, longitude: -0.1278 }, // 45°
+  { name: "Tokyo", latitude: 35.6895, longitude: 139.6917 }, // 90°
+  { name: "Sydney", latitude: -33.8688, longitude: 151.2093 }, // 135°
+  { name: "Moscow", latitude: 55.7558, longitude: 37.6173 }, // 180°
+  { name: "Mexico City", latitude: 19.4326, longitude: -99.1332 }, // 225°
+  { name: "Cape Town", latitude: -33.9249, longitude: 18.4241 }, // 270°
+  { name: "Rio de Janeiro", latitude: -22.9068, longitude: -43.1729 } // 315°
 ];
+
 
 
 
