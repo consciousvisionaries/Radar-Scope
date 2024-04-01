@@ -169,15 +169,22 @@
   
 <script>
 const cities = [
-  { name: "New York", latitude: 40.7128, longitude: -74.0060 }, // 0°
-  { name: "London", latitude: 51.5074, longitude: -0.1278 }, // 45°
-  { name: "Tokyo", latitude: 35.6895, longitude: 139.6917 }, // 90°
-  { name: "Sydney", latitude: -33.8688, longitude: 151.2093 }, // 135°
-  { name: "Moscow", latitude: 55.7558, longitude: 37.6173 }, // 180°
-  { name: "Mexico City", latitude: 19.4326, longitude: -99.1332 }, // 225°
-  { name: "Cape Town", latitude: -33.9249, longitude: 18.4241 }, // 270°
-  { name: "Rio de Janeiro", latitude: -22.9068, longitude: -43.1729 } // 315°
+  { name: "New York", latitude: 40.7128, longitude: -74.0060 }, // Quadrant 1 (0° - 45°)
+  { name: "London", latitude: 51.5074, longitude: -0.1278 }, // Quadrant 2 (45° - 90°)
+  { name: "Tokyo", latitude: 35.6895, longitude: 139.6917 }, // Quadrant 3 (90° - 135°)
+  { name: "Sydney", latitude: -33.8688, longitude: 151.2093 }, // Quadrant 4 (135° - 180°)
+  { name: "Moscow", latitude: 55.7558, longitude: 37.6173 }, // Quadrant 5 (180° - 225°)
+  { name: "Mexico City", latitude: 19.4326, longitude: -99.1332 }, // Quadrant 6 (225° - 270°)
+  { name: "Cape Town", latitude: -33.9249, longitude: 18.4241 }, // Quadrant 7 (270° - 315°)
+  { name: "Rio de Janeiro", latitude: -22.9068, longitude: -43.1729 }, // Quadrant 8 (315° - 360°)
+  { name: "Buenos Aires", latitude: -34.6037, longitude: -58.3816 }, // Close to latitude -20 and longitude -20
 ];
+
+
+
+
+
+
 
 
 
@@ -205,8 +212,8 @@ function plotCities() {
     const label = document.createElement('div');
     label.className = 'label';
     label.textContent = city.name;
-    label.style.left = `${x +20}px`;
-    label.style.top = `${y + 20}px`; // Offset for visibility
+    label.style.left = `${x}px`; // Adjusted to x coordinate only
+    label.style.top = `${y}px`; // Adjusted to y coordinate only
     radar.appendChild(label);
 
     // Store for animation
@@ -214,6 +221,45 @@ function plotCities() {
     city.label = label;
   });
 }
+
+function plotOceans() {
+    const oceanData = [
+    { name: "Atlantic Ocean", latitudeRange: [-90, 0], longitudeRange: [-80, 20] },
+    { name: "Pacific Ocean", latitudeRange: [-90, 0], longitudeRange: [-180, -80] },
+    { name: "Indian Ocean", latitudeRange: [-90, 0], longitudeRange: [20, 120] },
+    { name: "Arctic Ocean", latitudeRange: [60, 90], longitudeRange: [-180, 180] },
+    { name: "Southern Ocean", latitudeRange: [-90, -60], longitudeRange: [-180, 180] }
+  ];
+  const radarRadius = radar.offsetWidth / 2;
+
+  oceanData.forEach(ocean => {
+    const angleRadians = Math.atan2(ocean.latitude, ocean.longitude) + Math.PI / 2; // Adjust for radar's 0 at top
+    const distanceFromCenter = radarRadius * (1 - Math.abs(ocean.latitude) / 90); // Simplify for demo
+    const x = radarRadius + distanceFromCenter * Math.cos(angleRadians);
+    const y = radarRadius + distanceFromCenter * Math.sin(angleRadians);
+
+    // Ocean Marker
+    const marker = document.createElement('div');
+    marker.className = 'ocean';
+    marker.style.left = `${x}px`;
+    marker.style.top = `${y}px`;
+    radar.appendChild(marker);
+
+    // Ocean Label
+    const label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = ocean.name;
+    label.style.left = `${x + 20}px`;
+    label.style.top = `${y + 20}px`; // Offset for visibility
+    radar.appendChild(label);
+  });
+}
+
+function getRandomNumber(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+
 
 function updateFeed() {
   cities.forEach(city => {
@@ -288,6 +334,7 @@ function animateRadar() {
 
 document.addEventListener('DOMContentLoaded', () => {
     plotCities();
+    plotOceans();
   updateFeed();
   animateRadar();
   const feed = document.getElementById('feed');
