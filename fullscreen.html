@@ -248,13 +248,11 @@ function animateRadar() {
 
     // Determine if the city should be highlighted based on the sweep angle
     if (deltaAngle < 5 && !city.highlightStarted) {
-        city.marker.classList.add('highlighted');
 
       city.marker.style.opacity = 1;
       city.label.style.opacity = 1;
       city.highlightStarted = true; // Mark highlight start
 
-      // Inside the function where you highlight the city
         
 
 
@@ -268,7 +266,6 @@ function animateRadar() {
         city.label.style.transition = 'opacity 1s ease-out';
         city.marker.style.opacity = 1;
         city.label.style.opacity = 1;
-        city.marker.classList.remove('highlighted');
 
       }, 250);
 
