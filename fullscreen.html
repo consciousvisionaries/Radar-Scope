@@ -3,9 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="refresh" content="60">
 <title>Digital Radar Scope</title>
 <style>
+    #feed {
+  /* Existing styles */
+  animation: scrollFeed 60s linear infinite;
+  position: relative;
+}
+
+@keyframes scrollFeed {
+  0% { top: 0; }
+  100% { top: -100%; }
+}
+
+.city-highlighted {
+  color: #ff0; /* Highlight color */
+}
+
   body, html {
     margin: 0;
     padding: 0;
@@ -16,135 +30,205 @@
     font-family: monospace;
   }
   #feed {
-    width: 33.33%;
-    height: 100vh;
-    overflow: auto;
-    font-size: 16px;
-    padding: 10px;
-    box-sizing: border-box;
-    animation: scrollFeed 60s linear infinite;
-  }
+  width: 33.33%;
+  height: 1000vh;
+  overflow: auto;
+  font-size: 16px;
+  padding: 10px;
+  box-sizing: border-box;
+  padding-bottom: 100px; /* Add some padding to the bottom */
+}
+
   #radarContainer {
-    flex: 1;
-    height: 100vh;
+    flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
   }
   #radar {
     position: relative;
-    height: 90vh;
-    width: 90vh;
-    max-width: 100%;
-    border: 5px solid #0f0;
+    height: 80vh;
+    width: 80vh;
     border-radius: 50%;
+    border: 5px solid #0f0;
   }
   #sweep {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: conic-gradient(rgba(0, 255, 0, 0) 0%, rgba(0, 255, 0, 0.5) 50%, rgba(0, 255, 0, 0) 100%);
-    border-radius: 50%;
-    animation: sweep 4s linear infinite;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  /* Define a conic-gradient with a sharp leading edge that fades out */
+  background: conic-gradient(
+    rgba(0, 255, 0, 0.0) 0%,
+    rgba(0, 255, 0, .7) 25%, /* Start of the main beam */
+    rgba(0, 255, 0, 0.4) 15%, /* Begin fading after the main beam */
+    rgba(0, 255, 0, 0.0) 0% /* Fully faded */
+  );
+  animation: sweep 4s linear infinite;
+}
+
+  .city, .label {
+    transition: opacity 1s ease-out; /* Smooth transition for fading to complete invisibility */
+    opacity: 0; /* Start invisible */
   }
   .city {
     position: absolute;
     width: 10px;
     height: 10px;
-    background-color: #ff0;
     border-radius: 50%;
+    background-color: #ff0;
     transform: translate(-50%, -50%);
-    opacity: 1;
   }
   .label {
     position: absolute;
     color: #ff0;
+    font-size: 12px;
     white-space: nowrap;
-    transform: translate(-50%, -20px);
-    font-size: 10px;
     text-shadow: 1px 1px 1px #000;
-    opacity: 1;
   }
   @keyframes sweep {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-  @keyframes scrollFeed {
-    from { top: 0; }
-    to { top: -100%; }
-  }
 </style>
 </head>
 <body>
+    <audio id="beepSound" src="beep.wav" preload="auto"></audio>
+
 <div id="feed">Major Cities:</div>
 <div id="radarContainer">
   <div id="radar">
     <div id="sweep"></div>
   </div>
 </div>
-<audio id="radarBeep" src="radar-beep.mp3" loop></audio>
 <script>
-// Simplified list, repeat for demonstration
 const cities = [
   { name: "New York", latitude: 40.7128, longitude: -74.0060 },
   { name: "London", latitude: 51.5074, longitude: -0.1278 },
   { name: "Tokyo", latitude: 35.6895, longitude: 139.6917 },
-  { name: "Paris", latitude: 48.8566, longitude: 2.3522 },
   { name: "Sydney", latitude: -33.8688, longitude: 151.2093 },
-  { name: "Shanghai", latitude: 31.2304, longitude: 121.4737 },
   { name: "Moscow", latitude: 55.7558, longitude: 37.6173 },
-  { name: "Dubai", latitude: 25.2048, longitude: 55.2708 },
-  { name: "São Paulo", latitude: -23.5505, longitude: -46.6333 },
-  { name: "Los Angeles", latitude: 34.0522, longitude: -118.2437 },
-  { name: "Mumbai", latitude: 19.0760, longitude: 72.8777 },
-  { name: "Mexico City", latitude: 19.4326, longitude: -99.1332 },
-  { name: "Beijing", latitude: 39.9042, longitude: 116.4074 },
-  { name: "Karachi", latitude: 24.8607, longitude: 67.0011 },
-  { name: "Istanbul", latitude: 41.0082, longitude: 28.9784 },
-  { name: "Delhi", latitude: 28.6139, longitude: 77.2090 },
-  { name: "Manila", latitude: 14.5995, longitude: 120.9842 },
-  { name: "Seoul", latitude: 37.5665, longitude: 126.9780 },
-  { name: "Santiago", latitude: -33.4489, longitude: -70.6693 },
-  { name: "Bangkok", latitude: 13.7563, longitude: 100.5018 },
-  // ... Add more cities to reach 50 entries
+  // Additional cities provided
+  
+  { name: "Salmon Arm", latitude: 50.7001, longitude: -119.2837 },
+  // More cities can be added here.
 ];
 
 
+const radar = document.getElementById('radar');
+const feed = document.getElementById('feed');
+
 function plotCities() {
-  const radar = document.getElementById('radar');
+  const radarRadius = radar.offsetWidth / 2;
   cities.forEach(city => {
-    const point = document.createElement('div');
-    point.className = 'city';
+    const angleRadians = Math.atan2(city.latitude, city.longitude) + Math.PI / 2; // Adjust for radar's 0 at top
+    const distanceFromCenter = radarRadius * (1 - Math.abs(city.latitude) / 90); // Simplify for demo
+    const x = radarRadius + distanceFromCenter * Math.cos(angleRadians);
+    const y = radarRadius + distanceFromCenter * Math.sin(angleRadians);
+
+    // City Marker
+    const marker = document.createElement('div');
+    marker.className = 'city';
+    marker.style.left = `${x}px`;
+    marker.style.top = `${y}px`;
+    radar.appendChild(marker);
+
+    // City Label
     const label = document.createElement('div');
     label.className = 'label';
     label.textContent = city.name;
-    const radarRadius = radar.offsetWidth / 2;
-    const angle = (city.longitude + 180) * Math.PI / 180;
-    const x = 50 + 50 * Math.cos(angle); // Adjust for CSS percentages
-    const y = 50 + 50 * Math.sin(angle);
-    point.style.left = `${x}%`;
-    point.style.top = `${y}%`;
-    label.style.left = `${x}%`;
-    label.style.top = `${y + 2}%`; // Adjust label position
-    radar.appendChild(point);
+    label.style.left = `${x}px`;
+    label.style.top = `${y + 30}px`; // Offset for visibility
     radar.appendChild(label);
-    setTimeout(() => { point.style.opacity = 0.5; label.style.opacity = 0.5; }, 2000);
+
+    // Store for animation
+    city.marker = marker;
+    city.label = label;
   });
 }
 
-function fillFeed() {
-  const feed = document.getElementById('feed');
+function updateFeed() {
   cities.forEach(city => {
-    feed.innerHTML += `${city.name}<br>`;
+    feed.innerHTML += `${city.name} (${city.latitude.toFixed(2)}, ${city.longitude.toFixed(2)})<br>`;
   });
 }
+
+let sweepAngle = 0;
+let lastUpdateTime = Date.now();
+
+const beepSound = document.getElementById('beepSound'); // Get the beep sound element
+
+// Function to play the first second of the beep sound
+function playBeepSound() {
+    beepSound.currentTime = 0; // Start from the beginning
+    beepSound.play().catch(e => console.error("Failed to play sound:", e));
+
+    // Stop the sound after 1 second
+    setTimeout(() => {
+        beepSound.pause(); // Stop playback
+        beepSound.currentTime = 0; // Reset position (optional, for readiness for next play)
+    }, 1000); // 1000 milliseconds = 1 second
+}
+
+
+
+function animateRadar() {
+  const now = Date.now();
+  const deltaTime = now - lastUpdateTime;
+  sweepAngle += (deltaTime / 4000) * 360; // Adjust based on actual time elapsed
+  sweepAngle %= 360; // Keep sweepAngle within 0-360 degrees
+  lastUpdateTime = now;
+
+  cities.forEach(city => {
+    const angleRadians = Math.atan2(city.latitude, city.longitude) + Math.PI / 2;
+    const cityAngle = (angleRadians * (180 / Math.PI) + 360) % 360;
+
+    let adjustedSweepAngle = sweepAngle; // Adjust sweep angle by 45 degrees
+    adjustedSweepAngle %= 360; // Ensure within 0-360 degrees
+
+    let deltaAngle = Math.abs(adjustedSweepAngle - cityAngle);
+    deltaAngle = deltaAngle > 180 ? 360 - deltaAngle : deltaAngle;
+
+    // Determine if the city should be highlighted based on the sweep angle
+    if (deltaAngle < 1 && !city.highlightStarted) {
+      city.marker.style.opacity = 1;
+      city.label.style.opacity = 1;
+      city.highlightStarted = true; // Mark highlight start
+
+      playBeepSound(); // Call this function where you need the beep sound to play
+
+          // Add city name to feed
+          feed.innerHTML += `${city.name} (${city.latitude.toFixed(2)}, ${city.longitude.toFixed(2)})<br>`;
+      
+      // Schedule fade out after 0.25 seconds
+      setTimeout(() => {
+        city.marker.style.transition = 'opacity 1s ease-out';
+        city.label.style.transition = 'opacity 1s ease-out';
+        city.marker.style.opacity = 1;
+        city.label.style.opacity = 1;
+      }, 0);
+
+      // Reset state after 0.5 seconds
+      setTimeout(() => {
+        city.highlightStarted = false;
+        city.marker.style.transition = 'opacity 1s ease-out';
+        city.label.style.transition = 'opacity 1s ease-out';
+        city.marker.style.opacity = 0;
+        city.label.style.opacity = 0;
+      }, 2000);
+    }
+  });
+
+  requestAnimationFrame(animateRadar);
+}
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
   plotCities();
-  fillFeed();
-  document.getElementById('radarBeep').play();
+  updateFeed();
+  animateRadar();
 });
-
 </script>
 </body>
 </html>
