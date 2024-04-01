@@ -190,7 +190,7 @@ function animateRadar() {
     deltaAngle = deltaAngle > 180 ? 360 - deltaAngle : deltaAngle;
 
     // Determine if the city should be highlighted based on the sweep angle
-    if (deltaAngle < 1 && !city.highlightStarted) {
+    if (deltaAngle < 5 && !city.highlightStarted) {
       city.marker.style.opacity = 1;
       city.label.style.opacity = 1;
       city.highlightStarted = true; // Mark highlight start
