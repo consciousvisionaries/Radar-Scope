@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Digital Radar Scope</title>
 <style>
    
 
@@ -19,29 +18,33 @@
     background-color: black;
     color: #0f0;
     font-family: monospace;
+    overflow: hidden;
   }
   #feed {
   width: 33.33%;
   height: 100vh;
-  overflow: auto;
+  overflow: scroll;
   font-size: 16px;
-  padding: 10px;
+  padding: 20px;
   box-sizing: border-box;
+  padding-top: 50px; /* Add some padding to the bottom */
   padding-bottom: 100px; /* Add some padding to the bottom */
 }
 
   #radarContainer {
+
     flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  #radar {
+
+
+#radar {
     position: relative;
-    height: 80vh;
-    width: 80vh;
+    height: 99vh;
+    width: 99vh;
     border-radius: 50%;
-    border: 5px solid #0f0;
   }
   #sweep {
   position: absolute;
@@ -58,52 +61,127 @@
   animation: sweep 4s linear infinite;
 }
 
-  .city, .label {
+  .city {
     transition: opacity 1s ease-out; /* Smooth transition for fading to complete invisibility */
     opacity: 0; /* Start invisible */
   }
   .city {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
     background-color: #ff0;
     transform: translate(-50%, -50%);
   }
-  .label {
+ .label {
     position: absolute;
     color: #ff0;
     font-size: 12px;
     white-space: nowrap;
     text-shadow: 1px 1px 1px #000;
-  }
-  @keyframes sweep {
+    transition: opacity 1s ease-out, font-size 0.5s ease-out; /* Added font-size transition */
+}
+
+.city.highlighted {
+    width: 30px;
+    height: 30px;}
+
+
+@keyframes sweep {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-  }
+}
+
+  .circle {
+  position: absolute;
+  border: 1px dashed #ff0;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.line {
+  position: absolute;
+  width: 2px;
+  height: 100%; /* Adjusted height to extend the crosshair lines beyond the radar */
+  background-color: #ff0;
+  top: 0%; /* Position at the center vertically */
+  left: 50%; /* Position at the center horizontally */
+}
+
+
+.heading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heading {
+  position: absolute;
+  color: #ff0;
+  font-size: 12px;
+  white-space: nowrap;
+  transform-origin: 50% 100%;
+}
+
+.heading:nth-child(1) {
+  transform: rotate(0deg) translateX(-50%); top: 0; }
+
 </style>
 </head>
 <body>
-    <audio id="beepSound" src="beep.wav" preload="auto"></audio>
-
-<div id="feed">Major Cities:</div>
+    <div id="feed">Major Cities:<p></p><p></p></div>
 <div id="radarContainer">
-  <div id="radar">
-    <div id="sweep"></div>
+    <div id="radar">
+      <div id="sweep"></div>
+      <!-- Headings -->
+     <div class="heading-container">
+        <div class="heading">0°</div>
+        <div class="heading">45°</div>
+        <div class="heading">90°</div>
+        <div class="heading">135°</div>
+        <div class="heading">180°</div>
+        <div class="heading">225°</div>
+        <div class="heading">270°</div>
+        <div class="heading">315°</div>
+      </div>
+      <!-- Add inner circles -->
+      <div class="circle" style="width: 85%; height: 85%;"></div>
+      <div class="circle" style="width: 60%; height: 60%;"></div>
+      <div class="circle" style="width: 35%; height: 35%;"></div>
+      <div class="circle" style="width: 10%; height: 10%;"></div>
+      <!-- Add crosshairs -->
+      <div class="line" style="transform: rotate(0deg);"></div>
+      <div class="line" style="transform: rotate(45deg);"></div>
+      <div class="line" style="transform: rotate(90deg);"></div>
+      <div class="line" style="transform: rotate(135deg);"></div>
+      <div class="line" style="transform: rotate(180deg);"></div>
+      <div class="line" style="transform: rotate(225deg);"></div>
+      <div class="line" style="transform: rotate(270deg);"></div>
+      <div class="line" style="transform: rotate(315deg);"></div>
+    </div>
+     
   </div>
-</div>
+  
 <script>
 const cities = [
-  { name: "New York", latitude: 40.7128, longitude: -74.0060 },
-  { name: "London", latitude: 51.5074, longitude: -0.1278 },
-  { name: "Tokyo", latitude: 35.6895, longitude: 139.6917 },
-  { name: "Sydney", latitude: -33.8688, longitude: 151.2093 },
-  { name: "Moscow", latitude: 55.7558, longitude: 37.6173 },
-  // Additional cities provided
-  
-  { name: "Salmon Arm", latitude: 50.7001, longitude: -119.2837 },
-  // More cities can be added here.
+  { name: "New York", latitude: 40.7128, longitude: -74.0060 }, // Quadrant 1 (0° - 45°)
+  { name: "London", latitude: 51.5074, longitude: -0.1278 }, // Quadrant 2 (45° - 90°)
+  { name: "Tokyo", latitude: 35.6895, longitude: 139.6917 }, // Quadrant 3 (90° - 135°)
+  { name: "Sydney", latitude: -33.8688, longitude: 151.2093 }, // Quadrant 4 (135° - 180°)
+  { name: "Moscow", latitude: 55.7558, longitude: 37.6173 }, // Quadrant 5 (180° - 225°)
+  { name: "Mexico City", latitude: 19.4326, longitude: -99.1332 }, // Quadrant 6 (225° - 270°)
+  { name: "Cape Town", latitude: -33.9249, longitude: 18.4241 }, // Quadrant 7 (270° - 315°)
+  { name: "Rio de Janeiro", latitude: -22.9068, longitude: -43.1729 } // Quadrant 8 (315° - 360°)
 ];
+
+
 
 
 const radar = document.getElementById('radar');
@@ -128,8 +206,8 @@ function plotCities() {
     const label = document.createElement('div');
     label.className = 'label';
     label.textContent = city.name;
-    label.style.left = `${x}px`;
-    label.style.top = `${y + 30}px`; // Offset for visibility
+    label.style.left = `${x +20}px`;
+    label.style.top = `${y + 20}px`; // Offset for visibility
     radar.appendChild(label);
 
     // Store for animation
@@ -147,19 +225,7 @@ function updateFeed() {
 let sweepAngle = 0;
 let lastUpdateTime = Date.now();
 
-const beepSound = document.getElementById('beepSound'); // Get the beep sound element
 
-// Function to play the first second of the beep sound
-function playBeepSound() {
-    beepSound.currentTime = 0; // Start from the beginning
-    beepSound.play().catch(e => console.error("Failed to play sound:", e));
-
-    // Stop the sound after 1 second
-    setTimeout(() => {
-        beepSound.pause(); // Stop playback
-        beepSound.currentTime = 0; // Reset position (optional, for readiness for next play)
-    }, 1000); // 1000 milliseconds = 1 second
-}
 
 
 
@@ -174,7 +240,7 @@ function animateRadar() {
     const angleRadians = Math.atan2(city.latitude, city.longitude) + Math.PI / 2;
     const cityAngle = (angleRadians * (180 / Math.PI) + 360) % 360;
 
-    let adjustedSweepAngle = sweepAngle; // Adjust sweep angle by 45 degrees
+    let adjustedSweepAngle = sweepAngle + 11.25; // Adjust sweep angle by 45 degrees
     adjustedSweepAngle %= 360; // Ensure within 0-360 degrees
 
     let deltaAngle = Math.abs(adjustedSweepAngle - cityAngle);
@@ -182,22 +248,29 @@ function animateRadar() {
 
     // Determine if the city should be highlighted based on the sweep angle
     if (deltaAngle < 5 && !city.highlightStarted) {
+        city.marker.classList.add('highlighted');
+
       city.marker.style.opacity = 1;
       city.label.style.opacity = 1;
       city.highlightStarted = true; // Mark highlight start
 
-      //playBeepSound(); // Call this function where you need the beep sound to play
+      // Inside the function where you highlight the city
+        
+
 
           // Add city name to feed
           feed.innerHTML += `${city.name} (${city.latitude.toFixed(2)}, ${city.longitude.toFixed(2)})<br>`;
       
       // Schedule fade out after 0.25 seconds
       setTimeout(() => {
+
         city.marker.style.transition = 'opacity 1s ease-out';
         city.label.style.transition = 'opacity 1s ease-out';
         city.marker.style.opacity = 1;
         city.label.style.opacity = 1;
-      }, 0);
+        city.marker.classList.remove('highlighted');
+
+      }, 250);
 
       // Reset state after 0.5 seconds
       setTimeout(() => {
@@ -215,11 +288,35 @@ function animateRadar() {
 
 
 
+
+
 document.addEventListener('DOMContentLoaded', () => {
-  plotCities();
+    plotCities();
   updateFeed();
   animateRadar();
+  const feed = document.getElementById('feed');
+
+  function scrollFeedToBottom() {
+    feed.scrollTop = feed.scrollHeight - feed.clientHeight;
+  }
+
+  // Check for overflow and scroll to bottom when it occurs
+  feed.addEventListener('scroll', () => {
+    if (feed.scrollTop + feed.clientHeight >= feed.scrollHeight) {
+      feed.style.overflowY = 'auto'; // Enable auto scroll
+    } else {
+      feed.style.overflowY = 'hidden'; // Disable auto scroll
+    }
+  });
+
+  // Scroll to bottom when content changes
+  const observer = new MutationObserver(scrollFeedToBottom);
+  observer.observe(feed, { childList: true, subtree: true });
+
+  // Initial scroll to bottom
+  scrollFeedToBottom();
 });
+
 </script>
 </body>
 </html>
