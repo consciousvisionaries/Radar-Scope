@@ -240,7 +240,7 @@ function animateRadar() {
     const angleRadians = Math.atan2(city.latitude, city.longitude) + Math.PI / 2;
     const cityAngle = (angleRadians * (180 / Math.PI) + 360) % 360;
 
-    let adjustedSweepAngle = sweepAngle + 11.25; // Adjust sweep angle by 45 degrees
+    let adjustedSweepAngle = sweepAngle + 200; // Adjust sweep angle by 45 degrees
     adjustedSweepAngle %= 360; // Ensure within 0-360 degrees
 
     let deltaAngle = Math.abs(adjustedSweepAngle - cityAngle);
