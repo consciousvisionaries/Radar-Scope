@@ -25,13 +25,20 @@
   #feed {
   width: 33.33%;
   height: 100vh;
-  overflow: hidden;
-  font-size: 10px;
+  overflow-y: scroll; /* Enable vertical scrolling */
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer 10+ */
   padding: 20px;
   box-sizing: border-box;
-  padding-top: 50px; /* Add some padding to the bottom */
-  padding-bottom: 100px; /* Add some padding to the bottom */
+  padding-top: 50px;
+  padding-bottom: 100px;
 }
+
+/* For Webkit browsers like Chrome, Safari */
+#feed::-webkit-scrollbar {
+  display: none;
+}
+
 
   #radarContainer {
 
@@ -144,9 +151,7 @@
       <!-- Headings -->
      <div class="heading-container">
         <div class="heading">360°</div>
-        <div class="heading">90°</div>
-        <div class="heading">180°</div>
-        <div class="heading">270°</div>
+       
         <div class="heading">North Pole</div> 
       </div>
       <!-- Add inner circles -->
@@ -217,53 +222,35 @@ function plotCities() {
   });
 }
 
-function plotOceans() {
-    const oceanData = [
-    { name: "Atlantic Ocean", latitudeRange: [-90, 0], longitudeRange: [-80, 20] },
-    { name: "Pacific Ocean", latitudeRange: [-90, 0], longitudeRange: [-180, -80] },
-    { name: "Indian Ocean", latitudeRange: [-90, 0], longitudeRange: [20, 120] },
-    { name: "Arctic Ocean", latitudeRange: [60, 90], longitudeRange: [-180, 180] },
-    { name: "Southern Ocean", latitudeRange: [-90, -60], longitudeRange: [-180, 180] }
-  ];
-  const radarRadius = radar.offsetWidth / 2;
-
-  oceanData.forEach(ocean => {
-    const angleRadians = Math.atan2(ocean.latitude, ocean.longitude) + Math.PI / 2; // Adjust for radar's 0 at top
-    const distanceFromCenter = radarRadius * (1 - Math.abs(ocean.latitude) / 90); // Simplify for demo
-    const x = radarRadius + distanceFromCenter * Math.cos(angleRadians);
-    const y = radarRadius + distanceFromCenter * Math.sin(angleRadians);
-
-    // Ocean Marker
-    const marker = document.createElement('div');
-    marker.className = 'ocean';
-    marker.style.left = `${x}px`;
-    marker.style.top = `${y}px`;
-    radar.appendChild(marker);
-
-    // Ocean Label
-    const label = document.createElement('div');
-    label.className = 'label';
-    label.textContent = ocean.name;
-    label.style.left = `${x + 20}px`;
-    label.style.top = `${y + 20}px`; // Offset for visibility
-    radar.appendChild(label);
-  });
-}
 
 function getRandomNumber(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+let lastUpdateTime = Date.now();
 
 
 function updateFeed() {
   cities.forEach(city => {
-    feed.innerHTML += `Trageting.... <br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: <br><br>`;
+    feed.innerHTML += `Trageting.... <br><br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: ${getCurrentFormattedTime()}<br><br>`;
   });
 }
 
 let sweepAngle = 0;
-let lastUpdateTime = Date.now();
+
+function getCurrentFormattedTime() {
+  const now = new Date(Date.now()); // Create a new Date object using the current timestamp
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // JS months are 0-based, so add 1
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  
+  // Return the formatted date and time string
+  return `${hours}:${minutes}:${seconds}`;
+}
+
 
 
 
@@ -297,7 +284,7 @@ function animateRadar() {
 
 
           // Add city name to feed
-          feed.innerHTML += `Trageting....<br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: <br><br>`;
+          feed.innerHTML += `Trageting.... <br><br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: ${getCurrentFormattedTime()}<br><br>`;
       
       // Schedule fade out after 0.25 seconds
       setTimeout(() => {
@@ -329,7 +316,6 @@ function animateRadar() {
 
 document.addEventListener('DOMContentLoaded', () => {
     plotCities();
-    plotOceans();
   updateFeed();
   animateRadar();
   const feed = document.getElementById('feed');
