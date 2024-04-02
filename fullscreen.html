@@ -258,7 +258,7 @@ function getRandomNumber(min, max) {
 
 function updateFeed() {
   cities.forEach(city => {
-    feed.innerHTML += `${city.name},<br> (${city.latitude.toFixed(2)}, ${city.longitude.toFixed(2)})<br>`;
+    feed.innerHTML += `Region:<br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: <br><br>`;
   });
 }
 
@@ -297,7 +297,7 @@ function animateRadar() {
 
 
           // Add city name to feed
-          feed.innerHTML += `Region ${city.name}<br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: <br><br>`;
+          feed.innerHTML += `Region:<br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: <br><br>`;
       
       // Schedule fade out after 0.25 seconds
       setTimeout(() => {
