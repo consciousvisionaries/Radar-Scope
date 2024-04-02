@@ -26,7 +26,7 @@
   width: 33.33%;
   height: 100vh;
   overflow: hidden;
-  font-size: 12px;
+  font-size: 10px;
   padding: 20px;
   box-sizing: border-box;
   padding-top: 50px; /* Add some padding to the bottom */
@@ -258,7 +258,7 @@ function getRandomNumber(min, max) {
 
 function updateFeed() {
   cities.forEach(city => {
-    feed.innerHTML += `Region:<br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: <br><br>`;
+    feed.innerHTML += `Trageting.... <br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: <br><br>`;
   });
 }
 
@@ -297,7 +297,7 @@ function animateRadar() {
 
 
           // Add city name to feed
-          feed.innerHTML += `Region:<br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: <br><br>`;
+          feed.innerHTML += `Trageting....<br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: <br><br>`;
       
       // Schedule fade out after 0.25 seconds
       setTimeout(() => {
