@@ -83,6 +83,8 @@
     transform: translate(-50%, -50%);
   }
  .label {
+  opacity: 0; /* Start invisible */
+
     position: absolute;
     color: #ff0;
     font-size: 12px;
@@ -213,7 +215,7 @@ function plotCities() {
     label.className = 'label';
     label.textContent = city.name;
     label.style.left = `${x}px`; // Adjusted to x coordinate only
-    label.style.top = `${y}px`; // Adjusted to y coordinate only
+    label.style.top = `${y+20}px`; // Adjusted to y coordinate only
     radar.appendChild(label);
 
     // Store for animation
@@ -290,18 +292,14 @@ function animateRadar() {
       setTimeout(() => {
 
         city.marker.style.transition = 'opacity 1s ease-out';
-        city.label.style.transition = 'opacity 1s ease-out';
-        city.marker.style.opacity = 1;
-        city.label.style.opacity = 1;
+        city.marker.style.opacity = 0;
 
-      }, 250);
+      }, 500);
 
       // Reset state after 0.5 seconds
       setTimeout(() => {
         city.highlightStarted = false;
-        city.marker.style.transition = 'opacity 1s ease-out';
         city.label.style.transition = 'opacity 1s ease-out';
-        city.marker.style.opacity = 0;
         city.label.style.opacity = 0;
       }, 750);
     }
