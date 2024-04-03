@@ -2,16 +2,24 @@
 <html>
 <head>
     <style>
+        /* Remove default margin and padding */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: black; /* Set background to black */
+        }
         .container {
             display: flex;
-            width: 100%;
-            height: 100vh; /* This makes the row take up the full height of the viewport */
+            width: 100vw; /* Set container width to full viewport width */
+            height: 100vh; /* Set container height to full viewport height */
+            overflow: hidden; /* Prevent any potential scrolling */
         }
         .color-column {
-            flex-grow: 1; /* This makes each column take up equal space */
+            flex-grow: 1; /* Make each column take up equal space */
             height: 100%;
         }
-        /* Define the specific colors requested */
+        /* Define the colors */
         .grey { background-color: grey; }
         .yellow { background-color: yellow; }
         .cyan { background-color: cyan; }
