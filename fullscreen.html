@@ -6,11 +6,9 @@
 <meta http-equiv="refresh" content="60">
 
 <style>
-   
-
-.city-highlighted {
-  color: #ff0; /* Highlight color */
-}
+  .city-highlighted {
+    color: #ff0; /* Highlight color */
+  }
 
   body, html {
     margin: 0;
@@ -22,59 +20,58 @@
     font-family: monospace;
     overflow: hidden;
   }
+
   #feed {
-  width: 33.33%;
-  height: 100vh;
-  overflow-y: scroll; /* Enable vertical scrolling */
-  scrollbar-width: none; /* For Firefox */
-  -ms-overflow-style: none; /* For Internet Explorer 10+ */
-  padding: 20px;
-  box-sizing: border-box;
-  padding-top: 50px;
-  padding-bottom: 100px;
-}
+    width: 33.33%;
+    height: 100vh;
+    overflow-y: auto; /* Enable vertical scrolling */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer 10+ */
+    padding: 20px;
+    box-sizing: border-box;
+    padding-top: 50px;
+    padding-bottom: 100px;
+    display: flex;
+    flex-direction: column-reverse; /* Reverse column order */
+  }
 
-/* For Webkit browsers like Chrome, Safari */
-#feed::-webkit-scrollbar {
-  display: none;
-}
-
+  /* For Webkit browsers like Chrome, Safari */
+  #feed::-webkit-scrollbar {
+    display: none;
+  }
 
   #radarContainer {
-
     flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
-
-#radar {
+  #radar {
     position: relative;
     height: 99vh;
     width: 99vh;
     border-radius: 50%;
   }
+
   #sweep {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  /* Define a conic-gradient with a sharp leading edge that fades out */
-  background: conic-gradient(
-    rgba(0, 255, 0, 0.0) 0%,
-    rgba(0, 255, 0, .7) 25%, /* Start of the main beam */
-    rgba(0, 255, 0, 0.4) 15%, /* Begin fading after the main beam */
-    rgba(0, 255, 0, 0.0) 0% /* Fully faded */
-  );
-  animation: sweep 4s linear infinite;
-}
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    /* Define a conic-gradient with a sharp leading edge that fades out */
+    background: conic-gradient(
+      rgba(0, 255, 0, 0.0) 0%,
+      rgba(0, 255, 0, .7) 25%, /* Start of the main beam */
+      rgba(0, 255, 0, 0.4) 15%, /* Begin fading after the main beam */
+      rgba(0, 255, 0, 0.0) 0% /* Fully faded */
+    );
+    animation: sweep 8s linear infinite; /* Adjusted animation duration */
+  }
 
   .city {
-    transition: opacity 1s ease-out; /* Smooth transition for fading to complete invisibility */
+    transition: opacity 2s ease-out; /* Smooth transition for fading to complete invisibility */
     opacity: 0; /* Start invisible */
-  }
-  .city {
     position: absolute;
     width: 15px;
     height: 15px;
@@ -82,98 +79,97 @@
     background-color: #ff0;
     transform: translate(-50%, -50%);
   }
- .label {
-  opacity: 0; /* Start invisible */
 
+  .city.highlighted {
+    width: 30px;
+    height: 30px;
+    transition: width 1s ease-out, height 1s ease-out; /* Adjusted transition durations */
+  }
+
+  .label {
+    opacity: 0; /* Start invisible */
     position: absolute;
     color: #ff0;
     font-size: 12px;
     white-space: nowrap;
     text-shadow: 1px 1px 1px #000;
-    transition: opacity 1s ease-out, font-size 0.5s ease-out; /* Added font-size transition */
-}
+    transition: opacity 2s ease-out, font-size 1s ease-out; /* Adjusted transition durations */
+  }
 
-.city.highlighted {
-    width: 30px;
-    height: 30px;}
-
-
-@keyframes sweep {
+  @keyframes sweep {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-}
+  }
 
   .circle {
-  position: absolute;
-  border: 1px dashed #ff0;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+    position: absolute;
+    border: 1px dashed #ff0;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
-.line {
-  position: absolute;
-  width: 2px;
-  height: 100%; /* Adjusted height to extend the crosshair lines beyond the radar */
-  background-color: #ff0;
-  top: 0%; /* Position at the center vertically */
-  left: 50%; /* Position at the center horizontally */
-}
+  .line {
+    position: absolute;
+    width: 2px;
+    height: 100%; /* Adjusted height to extend the crosshair lines beyond the radar */
+    background-color: #ff0;
+    top: 0%; /* Position at the center vertically */
+    left: 50%; /* Position at the center horizontally */
+  }
 
+  .heading-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-.heading-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  .heading {
+    position: absolute;
+    color: #ff0;
+    font-size: 6px;
+    transform-origin: 50% 100%;
+  }
 
-.heading {
-  position: absolute;
-  color: #ff0;
-  font-size: 6px;
-  transform-origin: 50% 100%;
-}
-
-.heading:nth-child(1) {
-  transform: rotate(0deg) translateX(-50%); top: 0; }
-
+  .heading:nth-child(1) {
+    transform: rotate(0deg) translateX(-50%);
+    top: 0;
+  }
 </style>
 </head>
 <body>
-    <div id="feed">Major Cities:<p></p><p></p></div>
+<div id="feed">Major Cities:<p></p><p></p></div>
 <div id="radarContainer">
-    <div id="radar">
-      <div id="sweep"></div>
-      <!-- Headings -->
-     <div class="heading-container">
-        <div class="heading">360°</div>
-       
-        <div class="heading">North Pole</div> 
-      </div>
-      <!-- Add inner circles -->
-      <div class="circle" style="width: 85%; height: 85%;"></div>
-      <div class="circle" style="width: 60%; height: 60%;"></div>
-      <div class="circle" style="width: 35%; height: 35%;"></div>
-      <div class="circle" style="width: 10%; height: 10%;"></div>
-      <!-- Add crosshairs -->
-      <div class="line" style="transform: rotate(0deg);"></div>
-      <div class="line" style="transform: rotate(45deg);"></div>
-      <div class="line" style="transform: rotate(90deg);"></div>
-      <div class="line" style="transform: rotate(135deg);"></div>
-      <div class="line" style="transform: rotate(180deg);"></div>
-      <div class="line" style="transform: rotate(225deg);"></div>
-      <div class="line" style="transform: rotate(270deg);"></div>
-      <div class="line" style="transform: rotate(315deg);"></div>
+  <div id="radar">
+    <div id="sweep"></div>
+    <!-- Headings -->
+    <div class="heading-container">
+      <div class="heading">360°</div>
+      <div class="heading">North Pole</div>
     </div>
-     
+    <!-- Add inner circles -->
+    <div class="circle" style="width: 85%; height: 85%;"></div>
+    <div class="circle" style="width: 60%; height: 60%;"></div>
+    <div class="circle" style="width: 35%; height: 35%;"></div>
+    <div class="circle" style="width: 10%; height: 10%;"></div>
+    <!-- Add crosshairs -->
+    <div class="line" style="transform: rotate(0deg);"></div>
+    <div class="line" style="transform: rotate(45deg);"></div>
+    <div class="line" style="transform: rotate(90deg);"></div>
+    <div class="line" style="transform: rotate(135deg);"></div>
+    <div class="line" style="transform: rotate(180deg);"></div>
+    <div class="line" style="transform: rotate(225deg);"></div>
+    <div class="line" style="transform: rotate(270deg);"></div>
+    <div class="line" style="transform: rotate(315deg);"></div>
   </div>
-  
+</div>
+
 <script>
 const cities = [
   { name: "New York", latitude: 28.71, longitude: -60.00 }, // Quadrant 1 (0° - 45°)
@@ -184,18 +180,6 @@ const cities = [
   { name: "Toronto", latitude: 55.65, longitude: -79.38 }, // Quadrant 1 (0° - 45°)
   { name: "Auckland", latitude: -36.84, longitude: 174.76 } // Quadrant 4 (135° - 180°)
 ];
-
-
-
-
-
-
-
-
-
-
-
-
 
 const radar = document.getElementById('radar');
 const feed = document.getElementById('feed');
@@ -229,44 +213,13 @@ function plotCities() {
   });
 }
 
-
-function getRandomNumber(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
 let lastUpdateTime = Date.now();
-
-
-function updateFeed() {
-  cities.forEach(city => {
-    feed.innerHTML += `Trageting.... <br><br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: ${getCurrentFormattedTime()}<br><br>`;
-  });
-}
-
 let sweepAngle = 0;
-
-function getCurrentFormattedTime() {
-  const now = new Date(Date.now()); // Create a new Date object using the current timestamp
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0'); // JS months are 0-based, so add 1
-  const day = String(now.getDate()).padStart(2, '0');
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
-  
-  // Return the formatted date and time string
-  return `${hours}:${minutes}:${seconds}`;
-}
-
-
-
-
-
 
 function animateRadar() {
   const now = Date.now();
   const deltaTime = now - lastUpdateTime;
-  sweepAngle += (deltaTime / 4000) * 360; // Adjust based on actual time elapsed
+  sweepAngle += (deltaTime / 8000) * 360; // Adjusted for half speed
   sweepAngle %= 360; // Keep sweepAngle within 0-360 degrees
   lastUpdateTime = now;
 
@@ -274,74 +227,64 @@ function animateRadar() {
     const angleRadians = Math.atan2(city.latitude, city.longitude) + Math.PI / 2;
     const cityAngle = (angleRadians * (180 / Math.PI) + 360) % 360;
 
-    let adjustedSweepAngle = sweepAngle + 11.25; // Adjust sweep angle by 45 degrees
-    adjustedSweepAngle %= 360; // Ensure within 0-360 degrees
-
-    let deltaAngle = Math.abs(adjustedSweepAngle - cityAngle);
+    // Calculate the absolute difference between the city angle and the sweep angle
+    let deltaAngle = Math.abs(sweepAngle - cityAngle);
     deltaAngle = deltaAngle > 180 ? 360 - deltaAngle : deltaAngle;
 
-    // Determine if the city should be highlighted based on the sweep angle
-    if (deltaAngle < 5 && !city.highlightStarted) {
+    // Adjust the threshold to ensure all cities are activated
+    const activationThreshold = 10; // Adjust as needed
 
+    // Determine if the city should be highlighted based on the difference angle
+    if (deltaAngle < activationThreshold && !city.highlightStarted) {
       city.marker.style.opacity = 1;
       city.label.style.opacity = 1;
       city.highlightStarted = true; // Mark highlight start
 
-        
+      // Add city name to feed
+      feed.innerHTML += `Targeting.... <br><br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: ${getCurrentFormattedTime()}<br><br>`;
+      scrollFeedToBottom();
 
-
-          // Add city name to feed
-          feed.innerHTML += `Trageting.... <br><br>--${city.name}<br><br>Lat: ${city.latitude.toFixed(2)} <br>Long: ${city.longitude.toFixed(2)}<br>Time: ${getCurrentFormattedTime()}<br><br>`;
-      
-      // Schedule fade out after 0.25 seconds
+      // Schedule fade out after a certain time
       setTimeout(() => {
-
-        city.marker.style.transition = 'opacity 1s ease-out';
+        city.marker.style.transition = 'opacity 2s ease-out'; // Adjusted transition duration
         city.marker.style.opacity = 0;
+      }, 1000); // Adjusted timeout delay
 
-      }, 500);
-
-      // Reset state after 0.5 seconds
+      // Reset state after a certain time
       setTimeout(() => {
         city.highlightStarted = false;
-        city.label.style.transition = 'opacity 1s ease-out';
+        city.label.style.transition = 'opacity 2s ease-out'; // Adjusted transition duration
         city.label.style.opacity = 0;
-      }, 750);
+      }, 1500); // Adjusted timeout delay
     }
   });
 
   requestAnimationFrame(animateRadar);
 }
 
+function scrollFeedToBottom() {
+  const feed = document.getElementById('feed');
+  // Check if scroll is at the bottom
+  const isAtBottom = feed.scrollHeight - feed.scrollTop === feed.clientHeight;
+  // Scroll to bottom only if already at bottom
+  if (isAtBottom) {
+    feed.scrollTop = feed.scrollHeight;
+  }
+}
 
-
-
+function getCurrentFormattedTime() {
+  const now = new Date(Date.now()); // Create a new Date object using the current timestamp
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  
+  // Return the formatted time string
+  return `${hours}:${minutes}:${seconds}`;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
-    plotCities();
-  updateFeed();
+  plotCities();
   animateRadar();
-  const feed = document.getElementById('feed');
-
-  function scrollFeedToBottom() {
-    feed.scrollTop = feed.scrollHeight - feed.clientHeight;
-  }
-
-  // Check for overflow and scroll to bottom when it occurs
-  feed.addEventListener('scroll', () => {
-    if (feed.scrollTop + feed.clientHeight >= feed.scrollHeight) {
-      feed.style.overflowY = 'auto'; // Enable auto scroll
-    } else {
-      feed.style.overflowY = 'hidden'; // Disable auto scroll
-    }
-  });
-
-  // Scroll to bottom when content changes
-  const observer = new MutationObserver(scrollFeedToBottom);
-  observer.observe(feed, { childList: true, subtree: true });
-
-  // Initial scroll to bottom
-  scrollFeedToBottom();
 });
 
 </script>
